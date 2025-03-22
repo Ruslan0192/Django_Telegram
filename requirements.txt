@@ -1,0 +1,4 @@
+django==5.1.7
+pydantic_settings==2.8.0
+psycopg2==2.9.10
+pillow==11.1.0
