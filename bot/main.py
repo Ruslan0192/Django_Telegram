@@ -2,7 +2,7 @@ import asyncio
 import os
 
 from aiogram import Bot, Dispatcher, types
-# from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.redis import RedisStorage
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -23,9 +23,9 @@ bot.supeadmin = 0
 
 scheduler = AsyncIOScheduler()
 
-# storage = RedisStorage.from_url(settings.REDIS_URL)
-# dp = Dispatcher(storage=storage)
-dp = Dispatcher()
+storage = RedisStorage.from_url(settings.REDIS_URL)
+dp = Dispatcher(storage=storage)
+# dp = Dispatcher()
 dp.include_router(user_router)
 
 TIME_DISPATCH = 60

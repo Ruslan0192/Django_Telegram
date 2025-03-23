@@ -16,8 +16,8 @@ from keyboards.inline import *
 
 from utils.paginator import Paginator, def_pages
 
-p = Path(os.getcwd())
-IMAGE_PATH = p.parents[0]
+
+IMAGE_PATH = os.path.join(os.getcwd(), '/images')
 
 
 async def def_clear_message(bot: Bot, state: FSMContext, telegram_id: int):
@@ -219,7 +219,10 @@ async def def_new_card_product(message: types.Message, product, messages_show: d
                                           level, order_id, cart_id, quantity, ammont, flags_cart, flags_views)
     # проверка на наличие фото
     if product.image:
-        photo_file = FSInputFile(os.path.join(IMAGE_PATH, product.image))
+
+        file_name = product.image.split("/")[-1]
+        photo_file = FSInputFile(IMAGE_PATH, file_name)
+
         message_show = await message.answer_photo(photo=photo_file,
                                                   caption=text,
                                                   reply_markup=reply_markup,
@@ -289,7 +292,9 @@ async def def_change_card_product(bot: Bot, state: FSMContext, telegram_id: int,
     message_show = messages_show[product.id][1]
 
     if product.image:
-        photo_file = FSInputFile(os.path.join(IMAGE_PATH, product.image))
+        file_name = product.image.split("/")[-1]
+        photo_file = FSInputFile(os.path.join(IMAGE_PATH), file_name)
+
         media = InputMediaPhoto(media=photo_file, caption=text, parse_mode='Markdown')
         await bot.edit_message_media(media=media,
                                      chat_id=telegram_id,
