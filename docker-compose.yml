@@ -1,17 +1,22 @@
 version: '3.8'
 
 services:
+
+  bot:
+    build: ./bot
+    command: python bot/main.py
+
+    env_file:
+      - bot/.env_bot
+
+    volumes:
+      - .:/bot
+    depends_on:
+      - db
+
   app:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
-    environment:
-      DEBUG: DEBUG
-      POSTGRES_USER: POSTGRES_USER
-      POSTGRES_PASSWORD: POSTGRES_PASSWORD
-      POSTGRES_DB: POSTGRES_DB
-      POSTGRES_HOST: POSTGRES_HOST
-    env_file:
-      - .env
 
     volumes:
       - .:/app
@@ -24,11 +29,11 @@ services:
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/posgresql/data/
-    environment:
-      POSTGRES_USER: POSTGRES_USER
-      POSTGRES_PASSWORD: POSTGRES_PASSWORD
-      POSTGRES_DB: POSTGRES_DB
-      POSTGRES_HOST: POSTGRES_HOST
+#    environment:
+#      POSTGRES_USER: POSTGRES_USER
+#      POSTGRES_PASSWORD: POSTGRES_PASSWORD
+#      POSTGRES_DB: POSTGRES_DB
+#      POSTGRES_HOST: POSTGRES_HOST
     env_file:
       - .env
     ports:

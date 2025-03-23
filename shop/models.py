@@ -47,7 +47,7 @@ class UnderCategories(models.Model):
 class Products(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название')
     description = models.TextField(blank=True, null=True, verbose_name='Описание')
-    image = models.ImageField(max_length=250, upload_to='images', null=True, verbose_name='Изображение')
+    image = models.ImageField(max_length=250, upload_to='bot/images', null=True, verbose_name='Изображение')
     price = models.DecimalField(default=0.00, max_digits=7, decimal_places=2, verbose_name='Цена')
     undercategories = models.ForeignKey(to=UnderCategories, on_delete=models.CASCADE, verbose_name='Подкатегория')
 
