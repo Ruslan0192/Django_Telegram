@@ -24,10 +24,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: str
 
-    REDIS_DB: str
-    REDIS_HOST: str
-    REDIS_PORT: str
-    REDIS_PASSWORD: str
+    REDIS_URL: str
 
     model_config = SettingsConfigDict(env_file=".env_bot")
 

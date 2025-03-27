@@ -1,6 +1,6 @@
 import datetime
 import os
-from pathlib import Path
+import pathlib
 
 from aiogram import Bot, types
 from aiogram.types import FSInputFile, InputMediaPhoto, LabeledPrice
@@ -15,9 +15,6 @@ from database.orm_query import *
 from keyboards.inline import *
 
 from utils.paginator import Paginator, def_pages
-
-
-IMAGE_PATH = os.path.join(os.getcwd(), '/images')
 
 
 async def def_clear_message(bot: Bot, state: FSMContext, telegram_id: int):
@@ -219,10 +216,7 @@ async def def_new_card_product(message: types.Message, product, messages_show: d
                                           level, order_id, cart_id, quantity, ammont, flags_cart, flags_views)
     # проверка на наличие фото
     if product.image:
-
-        file_name = product.image.split("/")[-1]
-        photo_file = FSInputFile(IMAGE_PATH, file_name)
-
+        photo_file = FSInputFile(pathlib.Path(product.image))
         message_show = await message.answer_photo(photo=photo_file,
                                                   caption=text,
                                                   reply_markup=reply_markup,
@@ -266,7 +260,7 @@ async def def_choice_product_qty(bot: Bot, session: AsyncSession, state: FSMCont
         await orm_change_cart_qty(session, cart_id, quantity, ammont)
         flags_cart = True
     elif quantity:
-        # есть кол-во, значит нет корзины. Создаю запись в БД
+        # Есть кол-во, значит нет корзины. Создаю запись в БД
         ammont = product.price * quantity
         cart_id = await orm_add_cart(session, order_id, product_id, quantity, ammont)
         flags_cart = True
@@ -292,9 +286,7 @@ async def def_change_card_product(bot: Bot, state: FSMContext, telegram_id: int,
     message_show = messages_show[product.id][1]
 
     if product.image:
-        file_name = product.image.split("/")[-1]
-        photo_file = FSInputFile(os.path.join(IMAGE_PATH), file_name)
-
+        photo_file = FSInputFile(pathlib.Path(product.image))
         media = InputMediaPhoto(media=photo_file, caption=text, parse_mode='Markdown')
         await bot.edit_message_media(media=media,
                                      chat_id=telegram_id,
@@ -428,7 +420,7 @@ async def def_payment(bot: Bot, session: AsyncSession, state: FSMContext, telegr
     await state.update_data({'messages_show': messages_show})
     await state.update_data({'amount': amount})
 
-    # временно, для тестовой оплаты. Заменить на 'Оплатите счет:'
+    # Временно, для тестовой оплаты. Заменить на 'Оплатите счет:'
     text = "Внимание! \nОплата производится в тестовом режиме! \n" \
            "Для оплаты используйте данные тестовой карты:\n1111 1111 1111 1026\n12/26 CVC 000.\n\n"\
            "В тест режиме оплата в пределах 100 - 1000  рублей."

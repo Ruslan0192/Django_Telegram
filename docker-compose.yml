@@ -1,21 +1,18 @@
-version: '3.8'
-
 services:
 
   bot:
     build: ./bot
     command: python bot/main.py
-
     env_file:
-      - bot/.env_bot
-
+      - /bot/.env_bot
     volumes:
       - .:/bot
     depends_on:
       - db
       - redis
     restart: always
-
+    networks:
+      - deploy_network
 
   app:
     build: .
@@ -23,37 +20,46 @@ services:
 
     volumes:
       - .:/app
+      - images_data:/bot/images/
     ports:
       - 8000:8000
     depends_on:
       - db
     restart: always
-
+    networks:
+      - deploy_network
 
   db:
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/posgresql/data/
-
     env_file:
       - .env
     ports:
       - 5432:5432
     restart: always
+    networks:
+      - deploy_network
 
 
   redis:
     image: redis:latest
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
-      - /path/to/local/dаta:/root/redis
-      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
-
+      - redis_data:/data
     env_file:
       - bot/.env_bot
+    networks:
+      - deploy_network
 
 
 volumes:
   postgres_data:
+  redis_data:
+  images_data:
+
+networks:
+  deploy_network:
+    driver: bridge
